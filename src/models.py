@@ -5,6 +5,28 @@ import math
 
 class Client(object):
     def __init__(self, id, name, email, cpf):
+        if not isinstance(id, int):
+            raise TypeError('O ID do cliente deve ser um inteiro.')
+
+        if not isinstance(name, str):
+            raise TypeError('O nome do cliente deve ser string.')
+            
+        if not isinstance(email, str):
+            raise TypeError('O email do cliente deve ser string.')
+
+        if not isinstance(cpf, str):
+            raise TypeError('O CPF do cliente deve ser string.')
+
+        regexEmail = '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$'
+
+        if not re.fullmatch(regexEmail, email):
+            raise TypeError('Email invalido.')
+
+        regexCpf = '^[0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2}$'
+
+        if not re.fullmatch(regexCpf, cpf):
+            raise TypeError('CPF invalido.')
+
         self.id = id
         self.name = name
         self.email = email
@@ -47,21 +69,8 @@ class Store(object):
     # Metodo que adiciona um usuario
     def addClient(self, name, email, cpf):
         try:
-            if not (isinstance(name, str) and isinstance(email, str) and isinstance(cpf, str)):
-                raise TypeError('Os dados do cliente devem ser strings.')
-            
-            regexEmail = '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$'
-
-            if not re.fullmatch(regexEmail, email):
-                raise TypeError('Email invalido.')
-            
             if self.findClientByEmail(email):
                 raise TypeError('Cliente ja cadastrado.')
-
-            regexCpf = '^[0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2}$'
-
-            if not re.fullmatch(regexCpf, cpf):
-                raise TypeError('CPF invalido.')
 
             self.clients.append(Client(len(self.clients) + 1,name, email, cpf))
         except TypeError as error:
