@@ -26,9 +26,9 @@ def main():
     # print(storeOfBikes.bikes)
     # print(storeOfBikes.rents)
     # print(storeOfBikes.clients)
-    # storeOfBikes.calculateRent('email1@mail.com')
-    # storeOfBikes.calculateRent('email2@mail.com')
-    storeOfBikes.calculateRent('email3@mail.com')
+    # storeOfBikes.calculateRental('email1@mail.com')
+    # storeOfBikes.calculateRental('email2@mail.com')
+    storeOfBikes.calculateRental('email3@mail.com')
     storeOfBikes.showBikes()
 
 main()

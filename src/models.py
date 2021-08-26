@@ -37,10 +37,16 @@ class Client(object):
 
 class Store(object):
     def __init__(self, name, address):
+        if not isinstance(name, str):
+            raise TypeError('O nome da loja deve ser string.')
+            
+        if not isinstance(address, str):
+            raise TypeError('O endereco da loja deve ser string.')
+
         self.name = name
         self.address = address
         self.clients = []
-        self.rents = []
+        self.rentals = []
         """
         {
             model: hora/dia/semana
@@ -68,51 +74,44 @@ class Store(object):
     
     # Metodo que adiciona um usuario
     def addClient(self, name, email, cpf):
-        try:
-            if self.findClientByEmail(email):
-                raise TypeError('Cliente ja cadastrado.')
+        if self.findClientByEmail(email):
+            raise TypeError('Cliente ja cadastrado.')
 
-            self.clients.append(Client(len(self.clients) + 1,name, email, cpf))
-        except TypeError as error:
-            print(f'ERROR: {error.args[0]}')
-        except:
-            print(f'ERROR: Erro nao identificado.')
+        self.clients.append(Client(len(self.clients) + 1, name, email, cpf))
 
     
     # Metodo que adiciona um aluguel
     def addRental(self, model, email, quantity, family=False):
-        try:
-            if not model in ['hourly', 'daily', 'weekly']:
-                raise ValueError('Tipo de aluguel invalido.')
+        if not model in ['hourly', 'daily', 'weekly']:
+            raise ValueError('Tipo de aluguel invalido.')
+        
+        if not isinstance(quantity, int):
+            raise TypeError('A quantidade de alugueis deve ser inteira.')
 
-            bikesAvailable = self.getAvailableBikes(quantity)
+        bikesAvailable = self.getAvailableBikes(quantity)
 
-            if len(bikesAvailable) < quantity:
-                raise KeyError('Bicicleta indisponivel.')
+        if len(bikesAvailable) < quantity:
+            raise KeyError('Bicicleta indisponivel.')
 
-            existsClient = self.findClientByEmail(email)
+        existsClient = self.findClientByEmail(email)
 
-            if not existsClient:
-                raise KeyError('Cliente nao cadastrado.')
-            
-            if family and not (quantity >= 3 and quantity <= 5):
-                raise KeyError('Aluguel para familia deve ser de 3 a 5 emprestimos.')
-            
-            for bike in bikesAvailable:
-                bike['available'] = False
+        if not existsClient:
+            raise KeyError('Cliente nao cadastrado.')
+        
+        if family and not (quantity >= 3 and quantity <= 5):
+            raise ValueError('Aluguel para familia deve ser de 3 a 5 emprestimos.')
+        
+        for bike in bikesAvailable:
+            bike['available'] = False
 
-                self.rents.append({
-                    'model': model,
-                    'family': family,
-                    'start': datetime.today(),
-                    'end': None,
-                    'bikeId': bike['id'],
-                    'clientId': existsClient.id
-                })
-        except (ValueError, Exception, KeyError) as error:
-            print(f'ERROR: {error.args[0]}')
-        except:
-            print(f'ERROR: Erro nao identificado.')
+            self.rentals.append({
+                'model': model,
+                'family': family,
+                'start': datetime.today(),
+                'end': None,
+                'bikeId': bike['id'],
+                'clientId': existsClient.id
+            })
 
     # Metodo que retorna a primeira bicicleta displonivel
     def getAvailableBikes(self, quantity):
@@ -140,12 +139,12 @@ class Store(object):
         print(tabulate(self.bikes, headers="keys", tablefmt="fancy_grid"))
 
     # Metodo que calcula o aluguel
-    def calculateRent(self, email):
+    def calculateRental(self, email):
         client = self.findClientByEmail(email)
 
-        rents = [rent for rent in self.rents if not rent['end'] and rent['clientId'] == client.id]
+        rentals = [rent for rent in self.rentals if not rent['end'] and rent['clientId'] == client.id]
 
-        bikes = [bike for bike in self.bikes for rent in self.rents if rent['bikeId'] == bike['id'] and rent['clientId'] == client.id]
+        bikes = [bike for bike in self.bikes for rent in self.rentals if rent['bikeId'] == bike['id'] and rent['clientId'] == client.id]
 
         for bike in bikes:
             bike['available'] = True
@@ -154,7 +153,7 @@ class Store(object):
 
         valueForFamily = 0
 
-        for rent in rents:
+        for rent in rentals:
             rent['end'] = datetime.today()
 
             if rent['model'] == 'hourly':
