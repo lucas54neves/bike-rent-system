@@ -176,19 +176,18 @@ class Store(object):
     
     # Metodo que calcula o tempo
     def calculateTime(self, model, start, end):
+        if end < start:
+            raise ValueError('A data de entrega deve ser depois da data de empréstimo.')
+
         value = 0
 
         if model == 'hourly':
-            value = math.ceil(divmod((end - start).total_seconds(), 3600)[0])
+            value = math.ceil((end - start).total_seconds()/ 3600)
         elif model == 'daily':
-            value = math.ceil(divmod((end - start).total_seconds(), 86400)[0])
+            value = math.ceil((end - start).total_seconds()/ 86400)
         elif model == 'weekly':
-            value = math.ceil(divmod((end - start).total_seconds(), 604800)[0])
+            value = math.ceil((end - start).total_seconds()/ 604800)
         
-        if value == 0:
+        if value < 1:
             return 1
         return value
-
-
-
-        #Teste de commit do Rafael
