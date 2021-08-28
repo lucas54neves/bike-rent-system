@@ -46,7 +46,9 @@ class StoreTests(unittest.TestCase):
     def test_attributes(self):
         self.assertEqual(self.store.name, 'Loja de bikes')
         self.assertEqual(self.store.address, 'Rua Um, 123')
-        self.assertEqual(self.store.address, 'Rua Um, 123')
+        self.assertEqual(self.store.clients, [])
+        self.assertEqual(self.store.rentals, []) 
+        self.assertEqual(self.store.bikes, [])              
     
     def test_name_is_not_string(self):
         with self.assertRaises(TypeError) as error:
