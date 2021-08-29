@@ -102,7 +102,7 @@ class StoreTests(unittest.TestCase):
         
         self.assertEqual(error.exception.args[0], 'Cliente nao cadastrado.')
     
-    def test_family_rent_must_be_between_two_and_five(self):
+    def test_family_rent_must_be_between_three_and_five(self):
         self.store.addClient('Nome1', 'email1@mail.com', '11122233344')
 
         for i in range(5):
@@ -375,7 +375,7 @@ class StoreTests(unittest.TestCase):
         with self.assertRaises(ValueError) as error:
             self.store.calculateTime('daily', date3, date1)
         
-        self.assertEqual(error.exception.args[0], 'A data de entrega deve ser depois da data de empréstimo.')
+        self.assertEqual(error.exception.args[0], 'A data de entrega deve ser depois da data de empréstimo.')        
 
 if __name__ == "__main__":
     unittest.main()
