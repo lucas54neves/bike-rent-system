@@ -64,24 +64,61 @@ class Store(object):
         }
         """
     
-    # Metodo que adicionar uma bicicleta
     def addBike(self, cor):
+        '''
+        Metodo que adiciona uma bicicleta a loja.
+
+        Parameters:
+        ----------
+        cor : str
+            Cor da bicicleta
+        '''
         self.bikes.append({
             'id': len(self.bikes) + 1,
             'color': cor,
             'available': True
         })
     
-    # Metodo que adiciona um usuario
     def addClient(self, name, email, cpf):
+        '''
+        Metodo que adiciona um cliente.
+
+        Parameters:
+        ----------
+        name : str
+            Nome do cliente
+        email : str
+            Email do cliente
+        
+        Returns
+        -------
+        None
+        '''
         if self.findClientByEmail(email):
             raise TypeError('Cliente ja cadastrado.')
 
         self.clients.append(Client(len(self.clients) + 1, name, email, cpf))
 
     
-    # Metodo que adiciona um aluguel
     def addRental(self, model, email, quantity, family=False):
+        '''
+        Metodo que adiciona um aluguel.
+
+        Parameters:
+        ----------
+        model : str
+            Modelo de aluguel que pode ser por hora ("hourly"), diário ("daily") ou semanal ("weekly")
+        email : str
+            Email do cliente
+        quantity : int
+            Quantidade de alugueis
+        family : boolean, optional
+            Informa se o aluguel e da promocao em familia, por default e falso
+        
+        Returns
+        -------
+        None
+        '''
         if not model in ['hourly', 'daily', 'weekly']:
             raise ValueError('Tipo de aluguel invalido.')
         
@@ -113,8 +150,19 @@ class Store(object):
                 'clientId': existsClient.id
             })
 
-    # Metodo que retorna a primeira bicicleta displonivel
     def getAvailableBikes(self, quantity):
+        '''
+        Metodo que busca as bicicletas disponiveis.
+
+        Parameters:
+        ----------
+        quantity : int
+            Quantidade de bicicletas que deseja buscar
+        
+        Returns
+        -------
+        Lista de dicionarios que representam as bicicletas
+        '''
         bikes = []
 
         for bike in self.bikes:
@@ -126,20 +174,52 @@ class Store(object):
         
         return bikes
     
-    # Metodo que retorna o cliente pelo email
     def findClientByEmail(self, email):
+        '''
+        Metodo que busca um cliente a partir do seu email.
+
+        Parameters:
+        ----------
+        email : str
+            Email do cliente
+        
+        Returns
+        -------
+        Cliente encontrado ou None
+        '''
         for client in self.clients:
             if client.email == email:
                 return client
         
         return None
 
-    # Metodo que exibe o estoque, ou seja, imprime todas as bicicletas
     def showBikes(self):
+        '''
+        Metodo que imprime todas as bicicletas do estoque.
+
+        Parameters:
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+        '''
         print(tabulate(self.bikes, headers="keys", tablefmt="fancy_grid"))
 
-    # Metodo que calcula o aluguel
     def calculateRental(self, email):
+        '''
+        Metodo que calcula o valor de todos os alugueis de um cliente.
+
+        Parameters:
+        ----------
+        email : str
+            Email do cliente
+        
+        Returns
+        -------
+        value (float): Valor do aluguel
+        '''
         client = self.findClientByEmail(email)
 
         rentals = [rent for rent in self.rentals if not rent['end'] and rent['clientId'] == client.id]
@@ -174,8 +254,23 @@ class Store(object):
 
         return value + (valueForFamily * 0.7)
     
-    # Metodo que calcula o tempo
     def calculateTime(self, model, start, end):
+        '''
+        Metodo que calcula o tempo do aluguel.
+
+        Parameters:
+        ----------
+        model : str
+            Modelo de aluguel que pode ser por hora ("hourly"), diário ("daily") ou semanal ("weekly")
+        start : date
+            Data de inicio do aluguel
+        end : date
+            Data de termino
+        
+        Returns
+        -------
+        value (int): Valor que representa a quantidade de tempo do aluguel
+        '''
         if end < start:
             raise ValueError('A data de entrega deve ser depois da data de empréstimo.')
 
