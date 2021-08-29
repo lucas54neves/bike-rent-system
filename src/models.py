@@ -5,6 +5,21 @@ import math
 
 class Client(object):
     def __init__(self, id, name, email, cpf):
+        """
+        Constroi todos atributos do objeto client.
+
+        Parameters
+        ----------
+            id : str
+                ID do cliente
+            name : str
+                Nome do cliente
+            email : str
+                Email do cliente
+            cpf : str
+                CPF do cliente
+        """
+
         if not isinstance(id, int):
             raise TypeError('O ID do cliente deve ser um inteiro.')
 
@@ -37,6 +52,35 @@ class Client(object):
 
 class Store(object):
     def __init__(self, name, address):
+        """
+        Constroi todos atributos do objeto store.
+
+        Parameters
+        ----------
+            name : str
+                Nome da loja
+            address : str
+                Endereco da loja
+            clients : list
+                Lista de clientes cadastrados na loja
+            rentals : list
+                Lista de alugueis cadastrados na loja
+                    {
+                        model: hora/dia/semana
+                        family: booleano que representa se o aluguel e da promocao familia
+                        start: data inicio
+                        end: data entrega
+                        bikeId: indice na lista de bikes
+                        clientId: indice do clients
+                    }
+            bikes : list
+                Lista de biciletas cadastradas na loja
+                    {
+                        color: cor da bike
+                        available: booleano que informa se esta disponivel
+                    }
+        """
+
         if not isinstance(name, str):
             raise TypeError('O nome da loja deve ser string.')
             
@@ -47,22 +91,7 @@ class Store(object):
         self.address = address
         self.clients = []
         self.rentals = []
-        """
-        {
-            model: hora/dia/semana
-            start: data inicio
-            end: data entrega
-            bikeId: indice na lista de bikes
-            clientId: indice do clients
-        }
-        """
         self.bikes = []
-        """
-        {
-            color: cor da bike
-            available: booleano que informa se esta disponivel
-        }
-        """
     
     def addBike(self, cor):
         '''
